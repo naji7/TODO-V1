@@ -8,17 +8,54 @@ import {
   Button,
   useDisclosure,
 } from "@nextui-org/react";
+import axios from "axios";
+import { useRouter } from "next/router";
+
 import { TextField } from "../textField";
 
 type SignUpProps = {
   isOpen: boolean;
   onOpenChange: any;
-  onclick: Function;
 };
 
 export const SignUp = (props: SignUpProps) => {
-  const { isOpen, onOpenChange, onclick } = props;
-  const [currentTab, setCurrentTab] = useState("signin");
+  const router = useRouter();
+  const callbackUrl = (router.query?.callbackUrl as string) ?? "/"
+  const { isOpen, onOpenChange } = props;
+  const [currentTab, setCurrentTab] = useState<string>("signin");
+  const [alias, setAlias] = useState<string>("")
+  const [email, setEmail] = useState<string>("")
+  const [password, setPassword] = useState<string>("")
+
+  const onLogin = async() =>{
+    try {
+      const loginResponse = await axios.post("api/auth/login",{
+        email,password
+      })
+      console.log("response : ",loginResponse);
+    } catch (error) {
+      
+    }
+  }
+
+   const onSignUp = async() =>{
+    try {
+      const signUpResponse = await axios.post("api/auth/signup",{
+        alias,email,password,redirect:false
+      })
+      if(signUpResponse?.status === 201){
+        router.push(callbackUrl)
+      }
+    } catch (error) {
+      
+    }
+  }
+
+  const nullTab = async() =>{
+    setAlias("");
+    setEmail("");
+    setPassword("")
+  }
 
   return (
     <Modal
@@ -38,19 +75,19 @@ export const SignUp = (props: SignUpProps) => {
             currentTab === "signin" ? <><ModalHeader className="flex flex-col gap-1">Add TODO</ModalHeader>
             <ModalBody>
               <div>
-              <TextField value = {"Email"} id={"email"} type={"email"} placeHolder={"Enter email"} onChange={()=>{console.log("haii")}} />
+              <TextField value = {"Email"} id={"email"} type={"email"} placeHolder={"Enter email"} onChange={(e:any)=>{setEmail(e.target.value)}} />
               &nbsp;
-              <TextField value = {"Password"} id={"password"}type={"password"}  placeHolder={"Enter password"} onChange={()=>{console.log("haii")}} />
+              <TextField value = {"Password"} id={"password"}type={"password"}  placeHolder={"Enter password"}  onChange={(e:any)=>{setPassword(e.target.value)}} />
               </div>
             </ModalBody>
             &nbsp;
-           <a className="md:decoration-blue-400 decoration-zinc-950 text-sky-700 flex justify-center cursor-pointer hover:text-sky-500" onClick={()=>{setCurrentTab("signout")}}>Don't you have an account</a>
+           <a className="md:decoration-blue-400 decoration-zinc-950 text-sky-700 flex justify-center cursor-pointer hover:text-sky-500" onClick={()=>{setCurrentTab("signout");nullTab()}}>Don't you have an account</a>
            &nbsp;
            <div className="flex justify-center ">
            <Button
                 color="primary"
                 className="bg-orange-500 px-9 py-3 text-white rounded-md capitalize font-bold hover:opacity-80 ease-in duration-200 tracking-wide"
-                // onPress={onOpen}
+                onPress={onLogin}
               >
                 SIGN IN
               </Button>
@@ -61,21 +98,21 @@ export const SignUp = (props: SignUpProps) => {
             </ModalFooter></> : <><ModalHeader className="flex flex-col gap-1">Add TODO</ModalHeader>
             <ModalBody>
               <div>
-              <TextField value = {"Alias"} id={"alias"} type={"text"} placeHolder={"Enter alias"} onChange={(e)=>{console.log(e.target.value)}} />
+              <TextField value = {"Alias"} id={"alias"} type={"text"} placeHolder={"Enter alias"} onChange={(e:any)=>{setAlias(e.target.value)}} />
               &nbsp;
-              <TextField value = {"Email"} id={"email"} type={"email"} placeHolder={"Enter email"} onChange={()=>{console.log("haii")}} />
+              <TextField value = {"Email"} id={"email"} type={"email"} placeHolder={"Enter email"} onChange={(e:any)=>{setEmail(e.target.value)}} />
               &nbsp;
-              <TextField value = {"Password"} id={"password"}type={"password"}  placeHolder={"Enter password"} onChange={()=>{console.log("haii")}} />
+              <TextField value = {"Password"} id={"password"}type={"password"}  placeHolder={"Enter password"}  onChange={(e:any)=>{setPassword(e.target.value)}} />
               </div>
             </ModalBody>
             &nbsp;
-           <a className="md:decoration-blue-400 decoration-zinc-950 text-sky-700 flex justify-center cursor-pointer hover:text-sky-500" onClick={()=>{setCurrentTab("signin")}}>You already have an account</a>
+           <a className="md:decoration-blue-400 decoration-zinc-950 text-sky-700 flex justify-center cursor-pointer hover:text-sky-500" onClick={()=>{setCurrentTab("signin"); nullTab()}}>You already have an account</a>
            &nbsp;
            <div className="flex justify-center ">
            <Button
                 color="primary"
                 className="bg-orange-500 px-9 py-3 text-white rounded-md capitalize font-bold hover:opacity-80 ease-in duration-200 tracking-wide"
-                // onPress={onOpen}
+                onPress={onSignUp}
               >
                 SIGN UP
               </Button>

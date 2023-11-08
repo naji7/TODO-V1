@@ -13,6 +13,8 @@ import {
 
 import { SignUp } from "@/components/modals/signUp";
 
+import connectMongo, { connectToDB } from "@/utils/database";
+
 export default function Home() {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
@@ -24,15 +26,17 @@ export default function Home() {
 
           <WalletButton
             onClick={onOpen}
+            // onClick={async()=>{
+            //   // connectToDB()
+            //   await connectMongo();
+            // }}
             value={"Sign In"}
           />
 
           <SignUp
           isOpen={isOpen}
           onOpenChange={onOpenChange}
-          onclick={(e: any) => {
-            // addTask(e);
-          }}
+          
         />
         </div>
         <div className="pt-20 flex flex-col justify-center items-center">
