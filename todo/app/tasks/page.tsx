@@ -9,14 +9,13 @@ import React, {
     Fragment,
   } from "react";
 //   import { getSession, signOut } from "next-auth/react";
-//   import { PopoverDropdown } from "@/components/popover/popover";
 //   import Moralis from "moralis";
 //   import { EvmChain } from "@moralisweb3/common-evm-utils";
 //   import {
 //     useEvmNativeBalance,
 //     useEvmNativeBalancesForAddresses,
 //   } from "@moralisweb3/next";
-//   import { ethers, BigNumber } from "ethers";
+  import { ethers } from "ethers";
 //   import { Chip } from "@material-tailwind/react";
   import {
     Tabs,
@@ -34,7 +33,7 @@ import React, {
   } from "@nextui-org/react";
   import { TaskCard } from "@/components/cards/taskCard";
   import { AddTaskModal } from "@/components/modals/addTask";
-//   import { ABI, CONTRACT_ADDRESS } from "@/utils/abi";
+  import { ABI, CONTRACT_ADDRESS } from "@/utils/abi";
 //   import { getWalletBalance } from "./api/users";
 //   import Loading from "./Loading";
   // import Lottie from "lottie-web";
@@ -67,7 +66,7 @@ import { PopoverDropdown } from "@/components/popover/popover";
     const [activeFilter, setActiveFilter] = useState("all");
     const [filteredTasks, setFilteredTasks] = useState([]);
   
-    // const notify = () => toast("Your task has been successfully created.");
+    const notify = () => toast("Your task has been successfully created.");
   
     // const decimals = 10;
     // const toWei = (ether: any) => ethers.utils.parseEther(ether);
@@ -90,134 +89,135 @@ import { PopoverDropdown } from "@/components/popover/popover";
     //   }
     // };
   
-    // const fetchBlockchainData = async () => {
-    //   try {
-    //     setIsPageLoading(true);
-    //     // load web3
-    //     const provider: any = new ethers.providers.Web3Provider(window.ethereum);
-    //     await provider.getCode(CONTRACT_ADDRESS);
-    //     setProvider(provider);
-    //     const network = await provider.getNetwork();
+    const fetchBlockchainData = async () => {
+      try {
+        setIsPageLoading(true);
+        // load web3
+        const provider: any = new ethers.BrowserProvider(window.ethereum);
+        await provider.getCode(CONTRACT_ADDRESS);
+        setProvider(provider);
+        const network = await provider.getNetwork();
   
-    //     // load contract
-    //     const toDoContract: any = new ethers.Contract(
-    //       CONTRACT_ADDRESS,
-    //       ABI,
-    //       provider
-    //     );
-    //     setContract(toDoContract);
+        // load contract
+        const toDoContract: any = new ethers.Contract(
+          CONTRACT_ADDRESS,
+          ABI,
+          provider
+        );
+        setContract(toDoContract);
   
-    //     await getAllTasks(toDoContract);
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // };
+        await getAllTasks(toDoContract);
+      } catch (error) {
+        console.log(error);
+      }
+    };
   
-    // const getAllTasks = async (contractData: any) => {
-    //   const taskCountInBigNumber = await contractData.taskCount();
-    //   const taskCount = taskCountInBigNumber.toNumber();
-    //   setTaskCount(taskCount);
+    const getAllTasks = async (contractData: any) => {
+      const taskCountInBigNumber = await contractData.taskCount();
+      console.log("taskCountInBigNumber : ",taskCountInBigNumber)
+      const taskCount = taskCountInBigNumber.toNumber();
+      setTaskCount(taskCount);
   
-    //   const tasks: any = [];
-    //   for (var i = 1; i <= taskCount; i++) {
-    //     const task = await contractData.tasks(i);
-    //     tasks.push(task);
-    //   }
+      const tasks: any = [];
+      for (var i = 1; i <= taskCount; i++) {
+        const task = await contractData.tasks(i);
+        tasks.push(task);
+      }
   
-    //   console.log("tasks : ", tasks);
+      console.log("tasks : ", tasks);
   
-    //   setTasks(tasks);
-    //   setFilteredTasks(tasks);
-    //   setIsPageLoading(false);
-    // };
+      setTasks(tasks);
+      setFilteredTasks(tasks);
+      setIsPageLoading(false);
+    };
   
-    // const addTask = async (data: string) => {
-    //   try {
-    //     // add task
-    //     const signer = await provider?.getSigner();
-    //     let transaction = await contract?.connect(signer).createTask(data);
-    //     setIsLoading(true);
-    //     onClose();
-    //     let response = await transaction.wait();
-    //     if (response) {
-    //       await getAllTasks(contract);
-    //       setIsLoading(false);
-    //       SuccessMessage({
-    //         message: `Your ${data} task has been successfully created.`,
-    //       });
-    //     }
-    //   } catch (error) {
-    //     ErrorMessage({ message: "Something went wrong" });
-    //   } finally {
-    //     setIsLoading(false);
-    //   }
-    // };
+    const addTask = async (data: string) => {
+      try {
+        // add task
+        const signer = await provider?.getSigner();
+        let transaction = await contract?.connect(signer).createTask(data);
+        setIsLoading(true);
+        onClose();
+        let response = await transaction.wait();
+        if (response) {
+          await getAllTasks(contract);
+          setIsLoading(false);
+          SuccessMessage({
+            message: `Your ${data} task has been successfully created.`,
+          });
+        }
+      } catch (error) {
+        ErrorMessage({ message: "Something went wrong" });
+      } finally {
+        setIsLoading(false);
+      }
+    };
   
-    // const filterTasks = (status: string) => {
-    //   var filtTasks: any = tasks;
-    //   if (status === "all") {
-    //     filtTasks = tasks;
-    //   } else if (status === "pending") {
-    //     filtTasks = tasks.filter((e: any) => {
-    //       return e.completed === false;
-    //     });
-    //   } else if (status === "completed") {
-    //     filtTasks = tasks.filter((e: any) => {
-    //       return e.completed === true;
-    //     });
-    //   }
+    const filterTasks = (status: string) => {
+      var filtTasks: any = tasks;
+      if (status === "all") {
+        filtTasks = tasks;
+      } else if (status === "pending") {
+        filtTasks = tasks.filter((e: any) => {
+          return e.completed === false;
+        });
+      } else if (status === "completed") {
+        filtTasks = tasks.filter((e: any) => {
+          return e.completed === true;
+        });
+      }
   
-    //   setFilteredTasks(filtTasks);
-    // };
+      setFilteredTasks(filtTasks);
+    };
   
-    // const completeTask = async (id: number) => {
-    //   try {
-    //     const signer = await provider.getSigner();
-    //     let transaction = await contract.connect(signer).completeTask(id);
-    //     setIsLoading(true);
-    //     const response = await transaction.wait();
-    //     if (response) {
-    //       await getAllTasks(contract);
-    //       await filterTasks(activeFilter);
-    //       setIsLoading(false);
-    //       SuccessMessage({
-    //         message: `Your have successfully completed the task.`,
-    //       });
-    //     }
-    //   } catch (error) {
-    //     console.log("error");
-    //     ErrorMessage({ message: "Something went wrong" });
-    //   } finally {
-    //     setIsLoading(false);
-    //   }
-    // };
+    const completeTask = async (id: number) => {
+      try {
+        const signer = await provider.getSigner();
+        let transaction = await contract.connect(signer).completeTask(id);
+        setIsLoading(true);
+        const response = await transaction.wait();
+        if (response) {
+          await getAllTasks(contract);
+          await filterTasks(activeFilter);
+          setIsLoading(false);
+          SuccessMessage({
+            message: `Your have successfully completed the task.`,
+          });
+        }
+      } catch (error) {
+        console.log("error");
+        ErrorMessage({ message: "Something went wrong" });
+      } finally {
+        setIsLoading(false);
+      }
+    };
   
-    // const deleteTask = async (id: number) => {
-    //   try {
-    //     const signer = await provider.getSigner();
-    //     let transaction = await contract.connect(signer).deleteTask(id);
-    //     setIsLoading(true);
-    //     const response = await transaction.wait();
-    //     if (response) {
-    //       await getAllTasks(contract);
-    //       await filterTasks(activeFilter);
-    //       setIsLoading(false);
-    //       SuccessMessage({
-    //         message: `task has been successfully deleted.`,
-    //       });
-    //     }
-    //   } catch (error) {
-    //     console.log("error");
-    //     ErrorMessage({ message: "Something went wrong" });
-    //   } finally {
-    //     setIsLoading(false);
-    //   }
-    // };
+    const deleteTask = async (id: number) => {
+      try {
+        const signer = await provider.getSigner();
+        let transaction = await contract.connect(signer).deleteTask(id);
+        setIsLoading(true);
+        const response = await transaction.wait();
+        if (response) {
+          await getAllTasks(contract);
+          await filterTasks(activeFilter);
+          setIsLoading(false);
+          SuccessMessage({
+            message: `task has been successfully deleted.`,
+          });
+        }
+      } catch (error) {
+        console.log("error");
+        ErrorMessage({ message: "Something went wrong" });
+      } finally {
+        setIsLoading(false);
+      }
+    };
   
-    // useEffect(() => {
-    //   fetchBlockchainData();
-    //   fetchWalletBalance();
-    // }, []);
+    useEffect(() => {
+      fetchBlockchainData();
+      // fetchWalletBalance();
+    }, []);
   
     return (
       <Fragment>
@@ -230,7 +230,7 @@ import { PopoverDropdown } from "@/components/popover/popover";
               <Brand />
               <PopoverDropdown
                 onclick={() => {
-                //   signOut({ redirect: "/" } as any);
+                  // signOut({ redirect: "/" } as any);
                 }}
                 address={"0x782349234345324"}
                 walletBalance={walletBalance.slice(0, 10)}
@@ -254,7 +254,7 @@ import { PopoverDropdown } from "@/components/popover/popover";
                   isOpen={isOpen}
                   onOpenChange={onOpenChange}
                   onclick={(e: any) => {
-                    // addTask(e);
+                    addTask(e);
                   }}
                 />
   
@@ -300,11 +300,11 @@ import { PopoverDropdown } from "@/components/popover/popover";
                                 createdAt={task.createdDate.toNumber()}
                                 id={task.id.toNumber()}
                                 onChecked={(id: number) => {
-                                //   completeTask(id);
+                                  completeTask(id);
                                 }}
                                 isCompleted={task.completed}
                                 onDelete={(id: number) => {
-                                //   deleteTask(id);
+                                  deleteTask(id);
                                 }}
                                 completedDate={task.completedDate}
                               />
