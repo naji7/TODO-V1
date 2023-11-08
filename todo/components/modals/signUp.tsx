@@ -9,7 +9,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import axios from "axios";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 import { TextField } from "../textField";
 
@@ -20,7 +20,7 @@ type SignUpProps = {
 
 export const SignUp = (props: SignUpProps) => {
   const router = useRouter();
-  const callbackUrl = (router.query?.callbackUrl as string) ?? "/"
+  // const callbackUrl = (router.query?.callbackUrl as string) ?? "/"
   const { isOpen, onOpenChange } = props;
   const [currentTab, setCurrentTab] = useState<string>("signin");
   const [alias, setAlias] = useState<string>("")
@@ -44,7 +44,7 @@ export const SignUp = (props: SignUpProps) => {
         alias,email,password,redirect:false
       })
       if(signUpResponse?.status === 201){
-        router.push(callbackUrl)
+        router.push("/")
       }
     } catch (error) {
       
