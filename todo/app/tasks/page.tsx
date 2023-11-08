@@ -1,3 +1,5 @@
+"use client"
+
 import React, {
     useEffect,
     useState,
@@ -32,12 +34,12 @@ import React, {
   } from "@nextui-org/react";
   import { TaskCard } from "@/components/cards/taskCard";
   import { AddTaskModal } from "@/components/modals/addTask";
-  import { ABI, CONTRACT_ADDRESS } from "@/utils/abi";
-  import { getWalletBalance } from "./api/users";
-  import Loading from "./Loading";
+//   import { ABI, CONTRACT_ADDRESS } from "@/utils/abi";
+//   import { getWalletBalance } from "./api/users";
+//   import Loading from "./Loading";
   // import Lottie from "lottie-web";
   import Lottie from "lottie-react";
-  import lottieBlock from "../assets/lotties/lottieBlock.json";
+  import lottieBlock from "../../public/lotties/lottieBlock.json";
   import LoadingModal from "@/components/modals/loading";
   import { IoIosAddCircle } from "react-icons/io";
   import { IconButton } from "@/components/button";
@@ -47,11 +49,12 @@ import React, {
   import "react-toastify/dist/ReactToastify.css";
   import { SuccessMessage, ErrorMessage } from "@/components/alert/messages";
   import Brand from "@/components/brand";
+import { PopoverDropdown } from "@/components/popover/popover";
   
   declare var window: any;
   
   // gets a prop from getServerSideProps
-  function User({ user }: any) {
+  export default function Tasks ()  {
     const [walletBalance, setWalletBalance] = useState("");
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
     const [provider, setProvider] = useState() as any;
@@ -66,155 +69,155 @@ import React, {
   
     // const notify = () => toast("Your task has been successfully created.");
   
-    const decimals = 10;
-    const toWei = (ether: any) => ethers.utils.parseEther(ether);
-    const toEther = (wei: any) => ethers.utils.formatEther(wei);
+    // const decimals = 10;
+    // const toWei = (ether: any) => ethers.utils.parseEther(ether);
+    // const toEther = (wei: any) => ethers.utils.formatEther(wei);
   
-    const address = user.address;
+    // const address = user.address;
   
-    const fetchWalletBalance = async () => {
-      const response = await getWalletBalance({
-        params: {
-          address
-        },
-      });
+    // const fetchWalletBalance = async () => {
+    //   const response = await getWalletBalance({
+    //     params: {
+    //       address
+    //     },
+    //   });
   
-      if (response?.status === 200) {
-        const oneEther = BigNumber.from(response?.data?.balance);
-        const walletBal = toEther(oneEther);
+    //   if (response?.status === 200) {
+    //     const oneEther = BigNumber.from(response?.data?.balance);
+    //     const walletBal = toEther(oneEther);
   
-        setWalletBalance(walletBal);
-      }
-    };
+    //     setWalletBalance(walletBal);
+    //   }
+    // };
   
-    const fetchBlockchainData = async () => {
-      try {
-        setIsPageLoading(true);
-        // load web3
-        const provider: any = new ethers.providers.Web3Provider(window.ethereum);
-        await provider.getCode(CONTRACT_ADDRESS);
-        setProvider(provider);
-        const network = await provider.getNetwork();
+    // const fetchBlockchainData = async () => {
+    //   try {
+    //     setIsPageLoading(true);
+    //     // load web3
+    //     const provider: any = new ethers.providers.Web3Provider(window.ethereum);
+    //     await provider.getCode(CONTRACT_ADDRESS);
+    //     setProvider(provider);
+    //     const network = await provider.getNetwork();
   
-        // load contract
-        const toDoContract: any = new ethers.Contract(
-          CONTRACT_ADDRESS,
-          ABI,
-          provider
-        );
-        setContract(toDoContract);
+    //     // load contract
+    //     const toDoContract: any = new ethers.Contract(
+    //       CONTRACT_ADDRESS,
+    //       ABI,
+    //       provider
+    //     );
+    //     setContract(toDoContract);
   
-        await getAllTasks(toDoContract);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+    //     await getAllTasks(toDoContract);
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // };
   
-    const getAllTasks = async (contractData: any) => {
-      const taskCountInBigNumber = await contractData.taskCount();
-      const taskCount = taskCountInBigNumber.toNumber();
-      setTaskCount(taskCount);
+    // const getAllTasks = async (contractData: any) => {
+    //   const taskCountInBigNumber = await contractData.taskCount();
+    //   const taskCount = taskCountInBigNumber.toNumber();
+    //   setTaskCount(taskCount);
   
-      const tasks: any = [];
-      for (var i = 1; i <= taskCount; i++) {
-        const task = await contractData.tasks(i);
-        tasks.push(task);
-      }
+    //   const tasks: any = [];
+    //   for (var i = 1; i <= taskCount; i++) {
+    //     const task = await contractData.tasks(i);
+    //     tasks.push(task);
+    //   }
   
-      console.log("tasks : ", tasks);
+    //   console.log("tasks : ", tasks);
   
-      setTasks(tasks);
-      setFilteredTasks(tasks);
-      setIsPageLoading(false);
-    };
+    //   setTasks(tasks);
+    //   setFilteredTasks(tasks);
+    //   setIsPageLoading(false);
+    // };
   
-    const addTask = async (data: string) => {
-      try {
-        // add task
-        const signer = await provider?.getSigner();
-        let transaction = await contract?.connect(signer).createTask(data);
-        setIsLoading(true);
-        onClose();
-        let response = await transaction.wait();
-        if (response) {
-          await getAllTasks(contract);
-          setIsLoading(false);
-          SuccessMessage({
-            message: `Your ${data} task has been successfully created.`,
-          });
-        }
-      } catch (error) {
-        ErrorMessage({ message: "Something went wrong" });
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    // const addTask = async (data: string) => {
+    //   try {
+    //     // add task
+    //     const signer = await provider?.getSigner();
+    //     let transaction = await contract?.connect(signer).createTask(data);
+    //     setIsLoading(true);
+    //     onClose();
+    //     let response = await transaction.wait();
+    //     if (response) {
+    //       await getAllTasks(contract);
+    //       setIsLoading(false);
+    //       SuccessMessage({
+    //         message: `Your ${data} task has been successfully created.`,
+    //       });
+    //     }
+    //   } catch (error) {
+    //     ErrorMessage({ message: "Something went wrong" });
+    //   } finally {
+    //     setIsLoading(false);
+    //   }
+    // };
   
-    const filterTasks = (status: string) => {
-      var filtTasks: any = tasks;
-      if (status === "all") {
-        filtTasks = tasks;
-      } else if (status === "pending") {
-        filtTasks = tasks.filter((e: any) => {
-          return e.completed === false;
-        });
-      } else if (status === "completed") {
-        filtTasks = tasks.filter((e: any) => {
-          return e.completed === true;
-        });
-      }
+    // const filterTasks = (status: string) => {
+    //   var filtTasks: any = tasks;
+    //   if (status === "all") {
+    //     filtTasks = tasks;
+    //   } else if (status === "pending") {
+    //     filtTasks = tasks.filter((e: any) => {
+    //       return e.completed === false;
+    //     });
+    //   } else if (status === "completed") {
+    //     filtTasks = tasks.filter((e: any) => {
+    //       return e.completed === true;
+    //     });
+    //   }
   
-      setFilteredTasks(filtTasks);
-    };
+    //   setFilteredTasks(filtTasks);
+    // };
   
-    const completeTask = async (id: number) => {
-      try {
-        const signer = await provider.getSigner();
-        let transaction = await contract.connect(signer).completeTask(id);
-        setIsLoading(true);
-        const response = await transaction.wait();
-        if (response) {
-          await getAllTasks(contract);
-          await filterTasks(activeFilter);
-          setIsLoading(false);
-          SuccessMessage({
-            message: `Your have successfully completed the task.`,
-          });
-        }
-      } catch (error) {
-        console.log("error");
-        ErrorMessage({ message: "Something went wrong" });
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    // const completeTask = async (id: number) => {
+    //   try {
+    //     const signer = await provider.getSigner();
+    //     let transaction = await contract.connect(signer).completeTask(id);
+    //     setIsLoading(true);
+    //     const response = await transaction.wait();
+    //     if (response) {
+    //       await getAllTasks(contract);
+    //       await filterTasks(activeFilter);
+    //       setIsLoading(false);
+    //       SuccessMessage({
+    //         message: `Your have successfully completed the task.`,
+    //       });
+    //     }
+    //   } catch (error) {
+    //     console.log("error");
+    //     ErrorMessage({ message: "Something went wrong" });
+    //   } finally {
+    //     setIsLoading(false);
+    //   }
+    // };
   
-    const deleteTask = async (id: number) => {
-      try {
-        const signer = await provider.getSigner();
-        let transaction = await contract.connect(signer).deleteTask(id);
-        setIsLoading(true);
-        const response = await transaction.wait();
-        if (response) {
-          await getAllTasks(contract);
-          await filterTasks(activeFilter);
-          setIsLoading(false);
-          SuccessMessage({
-            message: `task has been successfully deleted.`,
-          });
-        }
-      } catch (error) {
-        console.log("error");
-        ErrorMessage({ message: "Something went wrong" });
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    // const deleteTask = async (id: number) => {
+    //   try {
+    //     const signer = await provider.getSigner();
+    //     let transaction = await contract.connect(signer).deleteTask(id);
+    //     setIsLoading(true);
+    //     const response = await transaction.wait();
+    //     if (response) {
+    //       await getAllTasks(contract);
+    //       await filterTasks(activeFilter);
+    //       setIsLoading(false);
+    //       SuccessMessage({
+    //         message: `task has been successfully deleted.`,
+    //       });
+    //     }
+    //   } catch (error) {
+    //     console.log("error");
+    //     ErrorMessage({ message: "Something went wrong" });
+    //   } finally {
+    //     setIsLoading(false);
+    //   }
+    // };
   
-    useEffect(() => {
-      fetchBlockchainData();
-      fetchWalletBalance();
-    }, []);
+    // useEffect(() => {
+    //   fetchBlockchainData();
+    //   fetchWalletBalance();
+    // }, []);
   
     return (
       <Fragment>
@@ -227,9 +230,9 @@ import React, {
               <Brand />
               <PopoverDropdown
                 onclick={() => {
-                  signOut({ redirect: "/" } as any);
+                //   signOut({ redirect: "/" } as any);
                 }}
-                address={address}
+                address={"0x782349234345324"}
                 walletBalance={walletBalance.slice(0, 10)}
               />
             </div>
@@ -251,7 +254,7 @@ import React, {
                   isOpen={isOpen}
                   onOpenChange={onOpenChange}
                   onclick={(e: any) => {
-                    addTask(e);
+                    // addTask(e);
                   }}
                 />
   
@@ -265,7 +268,7 @@ import React, {
                   }}
                   onSelectionChange={(status: any) => {
                     setActiveFilter(status);
-                    filterTasks(status);
+                    // filterTasks(status);
                   }}
                 >
                   <Tab key="all" title="All"></Tab>
@@ -297,11 +300,11 @@ import React, {
                                 createdAt={task.createdDate.toNumber()}
                                 id={task.id.toNumber()}
                                 onChecked={(id: number) => {
-                                  completeTask(id);
+                                //   completeTask(id);
                                 }}
                                 isCompleted={task.completed}
                                 onDelete={(id: number) => {
-                                  deleteTask(id);
+                                //   deleteTask(id);
                                 }}
                                 completedDate={task.completedDate}
                               />
@@ -321,24 +324,23 @@ import React, {
     );
   }
   
-  export async function getServerSideProps(context: any) {
-    const session = await getSession(context);
+//   export async function getServerSideProps(context: any) {
+    // const session = await getSession(context);
   
     // redirect if not authenticated
-    if (!session) {
-      return {
-        redirect: {
-          destination: "/",
-          permanent: false,
-        },
-      };
-    }
+    // if (!session) {
+    //   return {
+    //     redirect: {
+    //       destination: "/",
+    //       permanent: false,
+    //     },
+    //   };
+    // }
   
-    return {
-      props: {
-        user: session.user,
-      },
-    };
-  }
+    // return {
+    //   props: {
+    //     user: session.user,
+    //   },
+    // };
+//   }
   
-  export default User;

@@ -13,8 +13,6 @@ import {
 
 import { SignUp } from "@/components/modals/signUp";
 
-import connectMongo, { connectToDB } from "@/utils/database";
-
 export default function Home() {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 

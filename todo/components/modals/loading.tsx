@@ -2,7 +2,7 @@ import React from "react";
 import Lottie from "lottie-react";
 import { Modal, ModalContent, ModalBody } from "@nextui-org/react";
 
-import lottieBlock from "../../assets/lotties/lottieBlock.json";
+import lottieBlock from "../../public/lotties/lottieBlock.json";
 
 type LoadingModalProps = {
   isOpen: boolean;
