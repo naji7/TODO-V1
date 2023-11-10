@@ -8,6 +8,7 @@ import React, {
     startTransition,
     Fragment,
   } from "react";
+  import { useSelector, useDispatch } from 'react-redux'
 //   import { getSession, signOut } from "next-auth/react";
 //   import Moralis from "moralis";
 //   import { EvmChain } from "@moralisweb3/common-evm-utils";
@@ -54,6 +55,7 @@ import { PopoverDropdown } from "@/components/popover/popover";
   
   // gets a prop from getServerSideProps
   export default function Tasks ()  {
+    const todos = useSelector((state)=>state.tasks)
     const [walletBalance, setWalletBalance] = useState("");
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
     const [provider, setProvider] = useState() as any;
@@ -90,6 +92,7 @@ import { PopoverDropdown } from "@/components/popover/popover";
     // };
   
     const fetchBlockchainData = async () => {
+      // console.log("count ," count);
       try {
         setIsPageLoading(true);
         // load web3
@@ -113,6 +116,7 @@ import { PopoverDropdown } from "@/components/popover/popover";
     };
   
     const getAllTasks = async (contractData: any) => {
+      console.log("contractData : ",contractData)
       const taskCountInBigNumber = await contractData.taskCount();
       console.log("taskCountInBigNumber : ",taskCountInBigNumber)
       const taskCount = taskCountInBigNumber.toNumber();
