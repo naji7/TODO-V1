@@ -1,17 +1,17 @@
-'use client'
+"use client";
 
-import Brand from '@/components/brand';
-import { WalletButton } from '@/components/button';
-import FeaturesCard from '@/components/cards/featuresCard';
-import Image from 'next/image'
+import Brand from "@/components/brand";
+import { WalletButton } from "@/components/button";
+import FeaturesCard from "@/components/cards/featuresCard";
+import Image from "next/image";
 import { MdManageHistory } from "react-icons/md";
 import { SiNginxproxymanager } from "react-icons/si";
 import { LuListTodo } from "react-icons/lu";
-import {
-  useDisclosure,
-} from "@nextui-org/react";
+import { useDisclosure } from "@nextui-org/react";
 
 import { SignUp } from "@/components/modals/signUp";
+import "../styles/global.css";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Home() {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
@@ -31,11 +31,7 @@ export default function Home() {
             value={"Sign In"}
           />
 
-          <SignUp
-          isOpen={isOpen}
-          onOpenChange={onOpenChange}
-          
-        />
+          <SignUp isOpen={isOpen} close={onClose} onOpenChange={onOpenChange} />
         </div>
         <div className="pt-20 flex flex-col justify-center items-center">
           <div className="pt-20 flex flex-col items-center z-20 md:flex-row">
@@ -148,7 +144,6 @@ export default function Home() {
             </div>
             <div className="relative m-auto w-full overflow-hidden before:absolute before:left-0 before:top-0 before:z-[2] before:h-full before:w-[100px]  before:content-[''] after:absolute after:right-0 after:top-0 after:z-[2] after:h-full after:w-[100px] after:-scale-x-100 after:content-['']">
               <div className="animate-infinite-slider flex w-[calc(250px*10)] justify-between">
-             
                 <div className="slide flex w-[125px] items-center justify-center">
                   <img src="/images/next.png" alt="" />
                 </div>
@@ -162,7 +157,6 @@ export default function Home() {
                   <img src="/images/solidity.png" alt="" />
                 </div>
 
-               
                 <div className="slide flex w-[125px] items-center justify-center">
                   <img src="/images/next.png" alt="" />
                 </div>

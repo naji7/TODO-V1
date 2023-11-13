@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 
 
 const RootLayout = ({children} : any) => {
+  
     return (
     <html lang="en">
       <body className={inter.className}>

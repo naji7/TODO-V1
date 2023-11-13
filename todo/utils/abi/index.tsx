@@ -1,4 +1,4 @@
-export const CONTRACT_ADDRESS = "0x77cdf93714c53aef239ae08b22b547d130fc00c7";
+export const CONTRACT_ADDRESS = "0x7296d758176be12c9a4eb197d6e43cf32277871f";
 export const ABI = [
   {
     anonymous: false,
@@ -8,6 +8,12 @@ export const ABI = [
         internalType: "uint256",
         name: "taskId",
         type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "bool",
+        name: "isDeleted",
+        type: "bool",
       },
     ],
     name: "DeleteTask",

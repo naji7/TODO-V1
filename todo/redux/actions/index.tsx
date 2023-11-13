@@ -1,14 +1,5 @@
+export const TODO_ONCHANGE = "TODO_ONCHANGE";
+export const TODO_ADD = "TODO_ADD";
+export const TODO_ADD_ALL_TASKS = "TODO_ADD_ALL_TASKS";
 
-import * as types from "../constants/actionTypes"
-
-// import {
-//     TODO_ONCHANGE,
-//     TODO_ADD,
-//     TODO_DELETE,
-//   } from '../constants/actionTypes';
-  
-//   export const onChangeTodo = (item) => ({ type: TODO_ONCHANGE, item });
-  
-//   export const addTodo = (item) => ({ type: TODO_ADD, item });
-  
-//   export const deleteTodo = (item) => ({ type: TODO_DELETE, item });
+export const ADD_USER_DETAILS = "ADD_USER_DETAILS";
